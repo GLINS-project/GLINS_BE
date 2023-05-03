@@ -1,5 +1,7 @@
 package GLINS_BE.GLINS.config;
 
+import GLINS_BE.GLINS.auth.oauth2.handler.RestAccessDeniedHandler;
+import GLINS_BE.GLINS.auth.oauth2.handler.RestAuthenticationEntryPoint;
 import GLINS_BE.GLINS.client.repository.ClientRepository;
 import GLINS_BE.GLINS.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import GLINS_BE.GLINS.auth.jwt.service.JwtService;

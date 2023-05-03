@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
+    // TODO: FE랑 상태코드 맞추기
     DUPLICATED_USER_EMAIL(HttpStatus.CONFLICT,"user email duplicated"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"user doesn't exist"),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"category doesn't exist"),

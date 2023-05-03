@@ -4,8 +4,6 @@ import GLINS_BE.GLINS.response.ErrorResponse;
 import GLINS_BE.GLINS.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -33,16 +31,4 @@ public class ExceptionManager {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Response.error(e));
     }
-
-//    @ExceptionHandler(AuthenticationException.class)
-//    public ResponseEntity<?> AuthenticationExceptionHandler(RuntimeException e){
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                .body(Response.error(e));
-//    }
-//
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException e) {
-//        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//                .body(Response.error(e));
-//    }
 }

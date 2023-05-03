@@ -29,4 +29,10 @@ public class ClientResponseDto {
         private String imageUrl;
     }
 
+    @Data
+    @Builder
+    public static class info{
+        private String nickname;
+        private String imageUrl;
+    }
 }

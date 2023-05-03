@@ -1,4 +1,4 @@
-package GLINS_BE.GLINS.config;
+package GLINS_BE.GLINS.auth.oauth2.handler;
 
 import GLINS_BE.GLINS.exception.ErrorCode;
 import GLINS_BE.GLINS.response.ErrorResponse;

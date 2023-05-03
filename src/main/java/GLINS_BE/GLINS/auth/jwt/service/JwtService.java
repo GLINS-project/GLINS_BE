@@ -2,6 +2,7 @@ package GLINS_BE.GLINS.auth.jwt.service;
 
 import GLINS_BE.GLINS.client.dto.ClientResponseDto;
 import GLINS_BE.GLINS.client.repository.ClientRepository;
+import GLINS_BE.GLINS.config.HttpUtil;
 import GLINS_BE.GLINS.exception.AllGlinsException;
 import GLINS_BE.GLINS.exception.ErrorCode;
 import com.auth0.jwt.JWT;
@@ -206,9 +207,8 @@ public class JwtService {
     }
 
     @Transactional
-    public ClientResponseDto.logout logout(HttpServletRequest request){
-
-//        String accessToken = requestDto.getAccessToken();
+    public ClientResponseDto.logout logout(){
+        HttpServletRequest request = HttpUtil.getRequest();
         String accessToken = this.extractAccessToken(request).get();
         System.out.println("accessToken = " + accessToken);
 

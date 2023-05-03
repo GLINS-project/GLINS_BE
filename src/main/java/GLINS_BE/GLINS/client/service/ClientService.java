@@ -4,10 +4,10 @@ import GLINS_BE.GLINS.client.domain.Client;
 import GLINS_BE.GLINS.client.dto.ClientRequestDto;
 import GLINS_BE.GLINS.client.dto.ClientResponseDto;
 import GLINS_BE.GLINS.client.repository.ClientRepository;
+import GLINS_BE.GLINS.config.SecurityUtil;
 import GLINS_BE.GLINS.exception.AllGlinsException;
 import GLINS_BE.GLINS.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,53 +16,29 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ClientService {
     private final ClientRepository clientRepository;
-    private final PasswordEncoder passwordEncoder;
 
     // 회원 탈퇴
-    public ClientResponseDto.withdraw withdraw(String email) {
-        Client client = this.validateClient(email);
+    public ClientResponseDto.withdraw withdraw() {
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
         clientRepository.deleteById(client.getId());
         return ClientResponseDto.withdraw.builder().clientId(client.getId()).message("회원 탈퇴 완료").build();
     }
 
     // 닉네임 변경
-    public ClientResponseDto.updateNickname updateNickname(String email, ClientRequestDto requestDto) {
-        Client client = this.validateClient(email);
-        Client updatedClient = Client.builder()
-                .id(client.getId())
-                .email(client.getEmail())
-                .password(client.getPassword())
-                .nickname(requestDto.getNickname())
-                .imageUrl(client.getImageUrl())
-                .role(client.getRole())
-                .socialType(client.getSocialType())
-                .socialId(client.getSocialId())
-                .refreshToken(client.getRefreshToken())
-                .build();
-        clientRepository.save(updatedClient);
-        return ClientResponseDto.updateNickname.builder()
-                .nickname(updatedClient.getNickname())
-                .build();
+    public ClientResponseDto.updateNickname updateNickname(ClientRequestDto requestDto) {
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
+        client.updateNickname(requestDto.getNickname());
+        return ClientResponseDto.updateNickname.builder().nickname(requestDto.getNickname()).build();
     }
 
     // 이미지 변경
-    public ClientResponseDto.updateImage updateImage(String email, ClientRequestDto requestDto) {
-        Client client = this.validateClient(email);
-        Client updatedClient = Client.builder()
-                .id(client.getId())
-                .email(client.getEmail())
-                .password(client.getPassword())
-                .nickname(client.getNickname())
-                .imageUrl(requestDto.getImageUrl())
-                .role(client.getRole())
-                .socialType(client.getSocialType())
-                .socialId(client.getSocialId())
-                .refreshToken(client.getRefreshToken())
-                .build();
-        clientRepository.save(updatedClient);
-        return ClientResponseDto.updateImage.builder()
-                .imageUrl(updatedClient.getImageUrl())
-                .build();
+    public ClientResponseDto.updateImage updateImage(ClientRequestDto requestDto) {
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
+        client.updateImage(requestDto.getImageUrl());
+        return ClientResponseDto.updateImage.builder().imageUrl(requestDto.getImageUrl()).build();
     }
 
     // 회원 검증 및 불러오기
@@ -71,4 +47,10 @@ public class ClientService {
                 new AllGlinsException(ErrorCode.CLIENT_NOT_FOUND, ErrorCode.CLIENT_NOT_FOUND.getMessage()));
     }
 
+    // 내 정보 얻어오기(프로필 화면을 위함)
+    public ClientResponseDto.info getInfo(){
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
+        return ClientResponseDto.info.builder().nickname(client.getNickname()).imageUrl(client.getImageUrl()).build();
+    }
 }

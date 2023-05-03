@@ -8,10 +8,7 @@ import GLINS_BE.GLINS.exception.AllGlinsException;
 import GLINS_BE.GLINS.exception.ErrorCode;
 import GLINS_BE.GLINS.response.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,30 +19,34 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping("/logout")
-    public Response<ClientResponseDto.logout> logout(HttpServletRequest request) {
-        ClientResponseDto.logout logoutResponse = jwtService.logout(request);
+    public Response<ClientResponseDto.logout> logout() {
+        ClientResponseDto.logout logoutResponse = jwtService.logout();
         return Response.success(logoutResponse);
     }
 
+    @GetMapping
+    public Response<ClientResponseDto.info> getInfo() {
+        ClientResponseDto.info infoResponse = clientService.getInfo();
+        return Response.success(infoResponse);
+    }
+
     @DeleteMapping
-    public Response<ClientResponseDto.withdraw> withdraw(Authentication authentication){
-        ClientResponseDto.withdraw withdrawResponse = clientService.withdraw(authentication.getName());
+    public Response<ClientResponseDto.withdraw> withdraw(){
+        ClientResponseDto.withdraw withdrawResponse = clientService.withdraw();
         return Response.success(withdrawResponse);
     }
 
     @PatchMapping("/nickname")
-    public Response<ClientResponseDto.updateNickname> updateNickname(Authentication authentication,
-                                                                     @RequestBody ClientRequestDto requestDto){
+    public Response<ClientResponseDto.updateNickname> updateNickname(@RequestBody ClientRequestDto requestDto){
         ClientResponseDto.updateNickname updateNicknameResponse =
-                clientService.updateNickname(authentication.getName(), requestDto);
+                clientService.updateNickname(requestDto);
         return Response.success(updateNicknameResponse);
     }
 
     @PatchMapping("/image")
-    public Response<ClientResponseDto.updateImage> updateImage(Authentication authentication,
-                                                               @RequestBody ClientRequestDto requestDto){
+    public Response<ClientResponseDto.updateImage> updateImage(@RequestBody ClientRequestDto requestDto){
         ClientResponseDto.updateImage updateImageResponse =
-                clientService.updateImage(authentication.getName(), requestDto);
+                clientService.updateImage(requestDto);
         return Response.success(updateImageResponse);
     }
 

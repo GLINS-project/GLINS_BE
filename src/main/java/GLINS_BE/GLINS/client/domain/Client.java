@@ -45,4 +45,12 @@ public class Client {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+
+    public void updateImage(String imageUrl){
+        this.imageUrl = imageUrl;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
