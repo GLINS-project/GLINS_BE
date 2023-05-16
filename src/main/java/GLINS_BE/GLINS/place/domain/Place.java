@@ -19,7 +19,4 @@ public class Place {
     private String placeName;
     private double latitude;
     private double longitude;
-    private Long likeNum;
-
-    public void increaseLike() { this.likeNum++; }
 }

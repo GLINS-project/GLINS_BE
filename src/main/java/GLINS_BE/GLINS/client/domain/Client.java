@@ -1,9 +1,12 @@
 package GLINS_BE.GLINS.client.domain;
 
+import GLINS_BE.GLINS.review.domain.Review;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -16,6 +19,10 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB에 기본키 생성을 위임
     @Column(name = "client_id")
     private Long id;
+
+    // 한 Client는 여러 리뷰들을 가질 수 있음
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    List<Review> reviews  = new ArrayList<>();
 
     private String email; // 이메일
     private String password; // 비밀번호

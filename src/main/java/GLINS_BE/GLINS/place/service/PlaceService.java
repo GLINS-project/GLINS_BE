@@ -13,13 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlaceService {
     private final PlaceRepository placeRepository;
 
-//    public PlaceResponseDto likePlace(PlaceRequestDto requestDto) {
-//        Place place = validatePlace(requestDto);
-//        place.increaseLike();
-//        return PlaceResponseDto.builder().placeName(place.getPlaceName())
-//                .likeNum(place.getLikeNum()).build();
-//    }
-
 // 장소가 이미 존재하는지 확인하기
 //    private Place validatePlace(PlaceRequestDto requestDto) {
 //        Place place = placeRepository.findByPlaceNameAndLatitudeAndLongitude(requestDto.getPlaceName(),
@@ -29,7 +22,7 @@ public class PlaceService {
 
     public Place createPlace(PlaceRequestDto requestDto) {
         Place place = Place.builder().placeName(requestDto.getPlaceName()).latitude(requestDto.getLatitude())
-                .longitude(requestDto.getLongitude()).likeNum(0L).build();
+                .longitude(requestDto.getLongitude()).build();
         return placeRepository.save(place);
     }
 }
