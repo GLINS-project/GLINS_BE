@@ -4,6 +4,8 @@ import GLINS_BE.GLINS.client.domain.Client;
 import GLINS_BE.GLINS.client.domain.Role;
 import GLINS_BE.GLINS.client.domain.SocialType;
 import GLINS_BE.GLINS.client.repository.ClientRepository;
+import GLINS_BE.GLINS.place.domain.Place;
+import GLINS_BE.GLINS.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 public class DummyLoader {
 
     private final ClientRepository clientRepository;
+    private final PlaceRepository placeRepository;
 
     @PostConstruct
     public void loadData(){
@@ -27,5 +30,10 @@ public class DummyLoader {
         Client client3 = new Client(3L, new ArrayList<>(), "abcd@abcd.com", "", "박정준",
                 "", Role.USER, SocialType.KAKAO, "", "");
         clientRepository.save(client3);
+
+        Place place1 = new Place(1L, "홍익대학교", 32.32423, 36.23412);
+        placeRepository.save(place1);
+        Place place2 = new Place(2L, "호계초등학교", 33.32423, 35.23412);
+        placeRepository.save(place2);
     }
 }

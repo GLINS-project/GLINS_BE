@@ -12,6 +12,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"user doesn't exist"),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"category doesn't exist"),
     STATE_NOT_FOUND(HttpStatus.NOT_FOUND,"state doesn't exist"),
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "place doesn't exist"),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "review doesn't exist"),
     DUPLICATED_USER_NICKNAME(HttpStatus.CONFLICT,"User nickname duplicated"),
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "client doesn't exist"),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "password is not matched"),
@@ -20,8 +22,8 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "token is not valid."),
     INVALID_TOKEN_LOGOUT(HttpStatus.UNAUTHORIZED, "token is not valid because you logged out."),
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "user authorization failed"),
-    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "database error")
-    ;
+    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "database error");
+
     private HttpStatus status;
     private String message;
 }
