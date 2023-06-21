@@ -7,6 +7,7 @@ import GLINS_BE.GLINS.exception.AllGlinsException;
 import GLINS_BE.GLINS.exception.ErrorCode;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -98,11 +103,11 @@ public class JwtService {
     /**
      * AccessToken + RefreshToken 헤더에 실어서 보내기
      */
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+        Map<String, Object> data = new HashMap<>();
+        data.put("accessToken", accessToken);
+        data.put("refreshToken", refreshToken);
+        makeJsonResponse(response, data);
         log.info("Access Token, Refresh Token 헤더 설정 완료");
     }
 
@@ -237,20 +242,16 @@ public class JwtService {
                 .message("로그아웃 성공")
                 .build();
     }
-//    /**
-//     * 카카오 로그아웃
-//     */
-//    public void kakaoLogout(String accessToken){
-//        try {
-//            URL url = new URL(kakaoLogoutURL);
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestMethod("POST");
-//            conn.setRequestProperty(AUTHORIZATION, accessToken);
-//            conn.disconnect();
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+    private void makeJsonResponse(HttpServletResponse response, Map<String, Object> data) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(data);
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+
+        PrintWriter writer = response.getWriter();
+        writer.print(json);
+        writer.flush();
+    }
 }
