@@ -98,8 +98,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                     if(redisTemplate.opsForValue().get(client.getEmail()) == null) // 로그아웃한 회원이라면
                         throw new AllGlinsException(ErrorCode.INVALID_TOKEN_LOGOUT, ErrorCode.INVALID_TOKEN_LOGOUT.getMessage());
                     String reIssuedRefreshToken = reIssueRefreshToken(client);
-                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(client.getEmail()),
-                            reIssuedRefreshToken);
+                    try {
+                        jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(client.getEmail()),
+                                reIssuedRefreshToken);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
     }
 
