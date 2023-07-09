@@ -17,12 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientService {
     private final ClientRepository clientRepository;
 
-    // 회원 탈퇴
-    public ClientResponseDto.withdraw withdraw() {
+    // 내 정보 얻어오기(프로필 화면을 위함)
+    public ClientResponseDto.info getInfo(){
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
-        clientRepository.deleteById(client.getId());
-        return ClientResponseDto.withdraw.builder().clientId(client.getId()).message("회원 탈퇴 완료").build();
+        return ClientResponseDto.info.builder().nickname(client.getNickname()).imageUrl(client.getImageUrl()).build();
+    }
+
+    // 다른 사용자의 정보 얻어오기
+    public ClientResponseDto.info getOtherInfo(Long clientId){
+        Client other = clientRepository.findById(clientId).orElseThrow(() ->
+                new AllGlinsException(ErrorCode.CLIENT_NOT_FOUND, ErrorCode.CLIENT_NOT_FOUND.getMessage()));
+        return ClientResponseDto.info.builder().nickname(other.getNickname()).imageUrl(other.getImageUrl()).build();
     }
 
     // 닉네임 변경
@@ -41,16 +47,17 @@ public class ClientService {
         return ClientResponseDto.updateImage.builder().imageUrl(requestDto.getImageUrl()).build();
     }
 
+    // 회원 탈퇴
+    public ClientResponseDto.withdraw withdraw() {
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
+        clientRepository.deleteById(client.getId());
+        return ClientResponseDto.withdraw.builder().clientId(client.getId()).message("회원 탈퇴 완료").build();
+    }
+
     // 회원 검증 및 불러오기
     private Client validateClient(String email) {
         return clientRepository.findByEmail(email).orElseThrow(() ->
                 new AllGlinsException(ErrorCode.CLIENT_NOT_FOUND, ErrorCode.CLIENT_NOT_FOUND.getMessage()));
-    }
-
-    // 내 정보 얻어오기(프로필 화면을 위함)
-    public ClientResponseDto.info getInfo(){
-        String email = SecurityUtil.getEmail();
-        Client client = validateClient(email);
-        return ClientResponseDto.info.builder().nickname(client.getNickname()).imageUrl(client.getImageUrl()).build();
     }
 }
