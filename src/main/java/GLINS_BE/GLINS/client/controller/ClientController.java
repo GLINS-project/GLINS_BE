@@ -20,34 +20,32 @@ public class ClientController {
 
     @GetMapping("/logout")
     public Response<ClientResponseDto.logout> logout() {
-        ClientResponseDto.logout logoutResponse = jwtService.logout();
-        return Response.success(logoutResponse);
+        return Response.success(jwtService.logout());
     }
 
     @GetMapping
     public Response<ClientResponseDto.info> getInfo() {
-        ClientResponseDto.info infoResponse = clientService.getInfo();
-        return Response.success(infoResponse);
+        return Response.success(clientService.getInfo());
+    }
+
+    @GetMapping("/{clientId}")
+    public Response<ClientResponseDto.info> getOtherInfo(@PathVariable Long clientId){
+        return Response.success(clientService.getOtherInfo(clientId));
     }
 
     @DeleteMapping
     public Response<ClientResponseDto.withdraw> withdraw(){
-        ClientResponseDto.withdraw withdrawResponse = clientService.withdraw();
-        return Response.success(withdrawResponse);
+        return Response.success(clientService.withdraw());
     }
 
     @PatchMapping("/nickname")
     public Response<ClientResponseDto.updateNickname> updateNickname(@RequestBody ClientRequestDto requestDto){
-        ClientResponseDto.updateNickname updateNicknameResponse =
-                clientService.updateNickname(requestDto);
-        return Response.success(updateNicknameResponse);
+        return Response.success(clientService.updateNickname(requestDto));
     }
 
     @PatchMapping("/image")
     public Response<ClientResponseDto.updateImage> updateImage(@RequestBody ClientRequestDto requestDto){
-        ClientResponseDto.updateImage updateImageResponse =
-                clientService.updateImage(requestDto);
-        return Response.success(updateImageResponse);
+        return Response.success(clientService.updateImage(requestDto));
     }
 
     @GetMapping("/jwt-test")

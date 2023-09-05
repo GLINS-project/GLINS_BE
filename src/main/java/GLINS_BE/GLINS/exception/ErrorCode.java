@@ -19,6 +19,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "password is not matched"),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "post doesn't exist"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "comment doesn't exist"),
+    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "follow doesn't exist"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "token is not valid."),
     INVALID_TOKEN_LOGOUT(HttpStatus.UNAUTHORIZED, "token is not valid because you logged out."),
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "user authorization failed"),
