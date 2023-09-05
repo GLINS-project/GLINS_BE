@@ -14,6 +14,7 @@ public enum ErrorCode {
     STATE_NOT_FOUND(HttpStatus.NOT_FOUND,"state doesn't exist"),
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "place doesn't exist"),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "review doesn't exist"),
+    WISHLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "wishlist doesn't exist"),
     DUPLICATED_USER_NICKNAME(HttpStatus.CONFLICT,"User nickname duplicated"),
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "client doesn't exist"),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "password is not matched"),
