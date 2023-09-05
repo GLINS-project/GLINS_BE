@@ -1,52 +1,32 @@
 package GLINS_BE.GLINS.wishlist.domain;
 
 import GLINS_BE.GLINS.client.domain.Client;
+import GLINS_BE.GLINS.place.domain.Place;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Wishlist")
+@Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "wishlist")
 public class Wishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wishlist_id;
-    private Long user_id;
-    private Long place_id;
-    private String wishlist_kind;
 
     @ManyToOne
-    @JoinColumn (name = "Clinet_id")
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    public Long getWishlist_id() {
-        return wishlist_id;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id", nullable = false)
+    private Place place;
 
-    public void setWishlist_id(Long wishlist_id) {
-        this.wishlist_id = wishlist_id;
-    }
-
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
-
-    public Long getPlace_id() {
-        return place_id;
-    }
-
-    public void setPlace_id(Long place_id) {
-        this.place_id = place_id;
-    }
-
-    public String getWishlist_kind() {
-        return wishlist_kind;
-    }
-
-    public void setWishlist_kind(String wishlist_kind) {
-        this.wishlist_kind = wishlist_kind;
-    }
+    private String wishlist_kind;
 }

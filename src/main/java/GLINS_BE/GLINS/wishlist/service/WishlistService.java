@@ -1,72 +1,102 @@
 package GLINS_BE.GLINS.wishlist.service;
 
+import GLINS_BE.GLINS.client.domain.Client;
+import GLINS_BE.GLINS.client.repository.ClientRepository;
+import GLINS_BE.GLINS.config.SecurityUtil;
+import GLINS_BE.GLINS.exception.AllGlinsException;
+import GLINS_BE.GLINS.exception.ErrorCode;
+import GLINS_BE.GLINS.place.domain.Place;
+import GLINS_BE.GLINS.place.repository.PlaceRepository;
+import GLINS_BE.GLINS.review.domain.Review;
+import GLINS_BE.GLINS.review.dto.ReviewResponseDto;
 import GLINS_BE.GLINS.wishlist.domain.Wishlist;
+import GLINS_BE.GLINS.wishlist.dto.WishlistRequestDto;
+import GLINS_BE.GLINS.wishlist.dto.WishlistResponseDto;
 import GLINS_BE.GLINS.wishlist.repository.WishlistRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
+@RequiredArgsConstructor
 @Service
 public class WishlistService {
     private final WishlistRepository wishlistRepository;
-
-    public WishlistService(WishlistRepository wishlistRepository) {
-        this.wishlistRepository = wishlistRepository;
-    }
+    private final PlaceRepository placeRepository;
+    private final ClientRepository clientRepository;
 
     /**
      * 위시리스트 추가
      */
-
-    public Wishlist join(Wishlist wishlist) {
-
-        long start = System.currentTimeMillis();
-
-        try {
-            wishlistRepository.save(wishlist);
-            return wishlist;
-        } finally {
-            long finish = System.currentTimeMillis();
-            long timeMs = finish - start;
-            System.out.println("join = " + timeMs + "ms");
-        }
+    public String createWishlist(Long placeId, WishlistRequestDto wishlistRequestDto) {
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
+        Place place = placeRepository.findById(placeId).orElseThrow(() ->
+                new AllGlinsException(ErrorCode.PLACE_NOT_FOUND, ErrorCode.PLACE_NOT_FOUND.getMessage()));
+        Wishlist createWishlist = Wishlist.builder().client(client).place(place).wishlist_kind(wishlistRequestDto.getWishlist_kind()).build();
+        wishlistRepository.save(createWishlist);
+        return "리뷰 등록 완료";
     }
+
 
     /**
      * 위시리스트 삭제
-     * @param wishlist
+     * @param wishlist_id
      */
+    public String deleteWishlist(Long wishlist_id) {
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
+        Wishlist wishlist = validateWishlist(wishlist_id);
 
-    public Wishlist getout(Wishlist wishlist) {
-        long start = System.currentTimeMillis();
-        try{
+        // 현재 사용자가 작성한 리뷰인지 확인하는 로직
+        if(client == wishlist.getClient()){
             wishlistRepository.delete(wishlist);
-            return wishlist;
-        } finally {
-            long finish = System.currentTimeMillis();
-            long timeMs = finish - start;
-            System.out.println("findMembers " + timeMs + "ms");
+        }else {
+            throw new AllGlinsException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage());
         }
+
+        return "위시리스트 삭제 완료";
     }
 
     /**
-     * 위시리스트 entity에 들어가 있는 요소들 중 하나의 값을 이용해서 해당 값을 찾아내는 Service
-     * @return
+     * 위시리스트 ID로 조회
      */
-    public Wishlist findOne(Long wishlistId) {
-        return wishlistRepository.findById(wishlistId);
+    public WishlistResponseDto getWishlistBywishlist_id(Long wishlist_id) {
+        return new WishlistResponseDto(validateWishlist(wishlist_id));
     }
 
-    public List<Wishlist> findbyuser(Long user_id) {
-        long start = System.currentTimeMillis();
-        try{
-            return wishlistRepository.findByUserId(user_id);
-        } finally {
-            long finish = System.currentTimeMillis();
-            long timeMs = finish - start;
-            System.out.println("findreviews " + timeMs + "ms");
-        }
+    /**
+     * ClientId로 위시리스트 조회
+     */
+    public List<WishlistResponseDto> getWishlistByClientId(Long clientId) {
+        return wishlistRepository.findByClient_Id(clientId).stream()
+                .map(WishlistResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 자신의 위시리스트 모두 조회
+     */
+    public List<WishlistResponseDto> getMyWishlist() {
+        String email = SecurityUtil.getEmail();
+        Client client = validateClient(email);
+        return wishlistRepository.findByClient_Id(client.getId()).stream()
+                .map(WishlistResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    private Client validateClient(String email) {
+        return clientRepository.findByEmail(email).orElseThrow(() ->
+                new AllGlinsException(ErrorCode.CLIENT_NOT_FOUND, ErrorCode.CLIENT_NOT_FOUND.getMessage()));
+    }
+
+    private Wishlist validateWishlist(Long wishlist_id) {
+        return wishlistRepository.findById(wishlist_id).orElseThrow(() ->
+                new AllGlinsException(ErrorCode.WISHLIST_NOT_FOUND, ErrorCode.WISHLIST_NOT_FOUND.getMessage()));
     }
 }
