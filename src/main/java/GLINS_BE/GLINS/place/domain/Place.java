@@ -23,4 +23,6 @@ public class Place {
     private String placeName;
     private double latitude;
     private double longitude;
+    private String category;
+    private String hashtag;
 }

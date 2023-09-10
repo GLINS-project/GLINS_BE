@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class Recomment_Service {
     public String executePythonScript(String arg) throws Exception {
         String pythonExePath = "python3"; // 혹은 "python3", 시스템에 따라 다를 수 있습니다.
-        String scriptPath = "/Users/yeoingug/Desktop/connect_py_db_v2.py";
+        String scriptPath = "/home/ubuntu/connect_py_db_v2.py";
 
         ProcessBuilder processBuilder = new ProcessBuilder(pythonExePath,scriptPath,arg);
         Process process = processBuilder.start();
