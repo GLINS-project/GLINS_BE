@@ -7,6 +7,7 @@ import GLINS_BE.GLINS.client.repository.ClientRepository;
 import GLINS_BE.GLINS.config.SecurityUtil;
 import GLINS_BE.GLINS.exception.AllGlinsException;
 import GLINS_BE.GLINS.exception.ErrorCode;
+import GLINS_BE.GLINS.util.S3Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ClientService {
     private final ClientRepository clientRepository;
+    private final S3Util s3Util;
 
     // 내 정보 얻어오기(프로필 화면을 위함)
     public ClientResponseDto.info getInfo(){
@@ -43,8 +45,12 @@ public class ClientService {
     public ClientResponseDto.updateImage updateImage(ClientRequestDto requestDto) {
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
-        client.updateImage(requestDto.getImageUrl());
-        return ClientResponseDto.updateImage.builder().imageUrl(requestDto.getImageUrl()).build();
+
+        if (requestDto.getProfileImage().isEmpty()) throw new AllGlinsException(ErrorCode.INVALID_REQUEST, "Profile image is empty");
+        String imageUrl = s3Util.uploadFiles(requestDto.getProfileImage(), "profile");
+
+        client.updateImage(imageUrl);
+        return ClientResponseDto.updateImage.builder().imageUrl(imageUrl).build();
     }
 
     // 회원 탈퇴

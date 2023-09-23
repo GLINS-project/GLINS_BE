@@ -8,23 +8,25 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     // TODO: FE랑 상태코드 맞추기
-    DUPLICATED_USER_EMAIL(HttpStatus.CONFLICT,"user email duplicated"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"user doesn't exist"),
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"category doesn't exist"),
-    STATE_NOT_FOUND(HttpStatus.NOT_FOUND,"state doesn't exist"),
-    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "place doesn't exist"),
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "review doesn't exist"),
-    WISHLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "wishlist doesn't exist"),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "Password is not matched"),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request"),
+    DUPLICATED_USER_EMAIL(HttpStatus.CONFLICT,"User email duplicated"),
     DUPLICATED_USER_NICKNAME(HttpStatus.CONFLICT,"User nickname duplicated"),
-    CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "client doesn't exist"),
-    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "password is not matched"),
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "post doesn't exist"),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "comment doesn't exist"),
-    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "follow doesn't exist"),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "token is not valid."),
-    INVALID_TOKEN_LOGOUT(HttpStatus.UNAUTHORIZED, "token is not valid because you logged out."),
-    INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "user authorization failed"),
-    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "database error");
+    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Database error"),
+    IMAGE_PROCESSING_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"Image Processing failed"),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"Category doesn't exist"),
+    CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Client doesn't exist"),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Comment doesn't exist"),
+    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "Follow doesn't exist"),
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "Place doesn't exist"),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post doesn't exist"),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "Review doesn't exist"),
+    STATE_NOT_FOUND(HttpStatus.NOT_FOUND,"State doesn't exist"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"User doesn't exist"),
+    WISHLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "Wishlist doesn't exist"),
+    INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "User authorization failed"),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Token is invalid"),
+    INVALID_TOKEN_LOGOUT(HttpStatus.UNAUTHORIZED, "Token is invalid because you logged out");
 
     private HttpStatus status;
     private String message;

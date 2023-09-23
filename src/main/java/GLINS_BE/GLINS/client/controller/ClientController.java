@@ -44,7 +44,7 @@ public class ClientController {
     }
 
     @PatchMapping("/image")
-    public Response<ClientResponseDto.updateImage> updateImage(@RequestBody ClientRequestDto requestDto){
+    public Response<ClientResponseDto.updateImage> updateImage(@ModelAttribute ClientRequestDto requestDto){ // ModelAttribute로 DTO와 폼 데이터와 바인딩
         return Response.success(clientService.updateImage(requestDto));
     }
 

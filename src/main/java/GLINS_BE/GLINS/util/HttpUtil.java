@@ -1,4 +1,4 @@
-package GLINS_BE.GLINS.config;
+package GLINS_BE.GLINS.util;
 
 
 import org.springframework.web.context.request.RequestContextHolder;
