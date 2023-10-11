@@ -3,8 +3,8 @@ package GLINS_BE.GLINS.wishlist.controller;
 import GLINS_BE.GLINS.response.Response;
 import GLINS_BE.GLINS.wishlist.dto.WishlistRequestDto;
 import GLINS_BE.GLINS.wishlist.dto.WishlistResponseDto;
-import GLINS_BE.GLINS.wishlist.service.Recomment_Service;
 import GLINS_BE.GLINS.wishlist.service.WishlistService;
+import com.nimbusds.jose.shaded.json.JSONArray;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -15,7 +15,6 @@ import java.util.List;
 public class WishlistController {
 
     private final WishlistService wishlistService;
-    private final Recomment_Service pythonService;
 
 
     /**
@@ -56,7 +55,7 @@ public class WishlistController {
     }
 
     /**
-     * 자기 자신의 리뷰 모두 검색
+     * 자기 자신의 위시리스트 검색
      */
     @GetMapping
     public Response<List<WishlistResponseDto>> getMyWishlist() {
@@ -64,12 +63,12 @@ public class WishlistController {
     }
 
     /**
-     * 추천 시스템 기반 알고리즘
+     * 추천 시스템 기반 알고리즘 by Client_ID
      *
      * @return
      */
     @GetMapping("/run-python")
-    public Response<String> runPythonScript() throws Exception {
-        return Response.success(pythonService.executePythonScript("400"));
+    public Response<JSONArray> runPythonScript() throws Exception {
+        return Response.success(wishlistService.RecommentService());
     }
 }
