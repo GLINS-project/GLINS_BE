@@ -23,3 +23,4 @@ public class WishlistResponseDto {
         client_id = wishlist.getClient().getId();
     }
 }
+
