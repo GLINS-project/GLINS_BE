@@ -69,6 +69,15 @@ public class ReviewService {
     }
 
     /**
+     placeId를 사용하여 리뷰 조회
+     */
+    public List<ReviewResponseDto> getReviewByPlaceId(Long id) {
+        return reviewRepository.findByPlace_Id(id).stream()
+                .map(ReviewResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 리뷰 삭제
      */
     public String deleteReview(Long reviewId) {

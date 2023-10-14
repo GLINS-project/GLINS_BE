@@ -2,7 +2,7 @@ package GLINS_BE.GLINS.auth.jwt.service;
 
 import GLINS_BE.GLINS.client.dto.ClientResponseDto;
 import GLINS_BE.GLINS.client.repository.ClientRepository;
-import GLINS_BE.GLINS.config.HttpUtil;
+import GLINS_BE.GLINS.util.HttpUtil;
 import GLINS_BE.GLINS.exception.AllGlinsException;
 import GLINS_BE.GLINS.exception.ErrorCode;
 import com.auth0.jwt.JWT;

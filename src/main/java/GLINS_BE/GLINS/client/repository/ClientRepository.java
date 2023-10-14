@@ -4,6 +4,7 @@ import GLINS_BE.GLINS.client.domain.Client;
 import GLINS_BE.GLINS.client.domain.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
@@ -19,4 +20,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
      * 따라서 추가 정보를 입력받아 회원 가입을 진행할 때 소셜 타입, 식별자로 해당 회원을 찾기 위한 메소드
      */
     Optional<Client> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
+
+    List<Client> findByNicknameContaining(String nickname);
 }

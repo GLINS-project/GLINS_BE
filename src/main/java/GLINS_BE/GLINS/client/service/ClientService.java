@@ -7,28 +7,43 @@ import GLINS_BE.GLINS.client.repository.ClientRepository;
 import GLINS_BE.GLINS.config.SecurityUtil;
 import GLINS_BE.GLINS.exception.AllGlinsException;
 import GLINS_BE.GLINS.exception.ErrorCode;
+import GLINS_BE.GLINS.util.S3Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ClientService {
     private final ClientRepository clientRepository;
+    private final S3Util s3Util;
 
     // 내 정보 얻어오기(프로필 화면을 위함)
     public ClientResponseDto.info getInfo(){
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
-        return ClientResponseDto.info.builder().nickname(client.getNickname()).imageUrl(client.getImageUrl()).build();
+        return ClientResponseDto.info.builder()
+                .id(client.getId()).nickname(client.getNickname()).imageUrl(client.getImageUrl()).build();
     }
 
     // 다른 사용자의 정보 얻어오기
     public ClientResponseDto.info getOtherInfo(Long clientId){
         Client other = clientRepository.findById(clientId).orElseThrow(() ->
                 new AllGlinsException(ErrorCode.CLIENT_NOT_FOUND, ErrorCode.CLIENT_NOT_FOUND.getMessage()));
-        return ClientResponseDto.info.builder().nickname(other.getNickname()).imageUrl(other.getImageUrl()).build();
+        return ClientResponseDto.info.builder()
+                .id(other.getId()).nickname(other.getNickname()).imageUrl(other.getImageUrl()).build();
+    }
+
+    // 닉네임으로 사용자들 검색해서 불러오기
+    public List<ClientResponseDto.info> getClientsWithNickname(String nickname) {
+        return clientRepository.findByNicknameContaining(nickname).stream()
+                .map(client -> ClientResponseDto.info.builder()
+                        .id(client.getId()).nickname(client.getNickname()).imageUrl(client.getImageUrl()).build())
+                .collect(Collectors.toList());
     }
 
     // 닉네임 변경
@@ -43,8 +58,12 @@ public class ClientService {
     public ClientResponseDto.updateImage updateImage(ClientRequestDto requestDto) {
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
-        client.updateImage(requestDto.getImageUrl());
-        return ClientResponseDto.updateImage.builder().imageUrl(requestDto.getImageUrl()).build();
+
+        if (requestDto.getProfileImage().isEmpty()) throw new AllGlinsException(ErrorCode.INVALID_REQUEST, "Profile image is empty");
+        String imageUrl = s3Util.uploadFiles(requestDto.getProfileImage(), "profile");
+
+        client.updateImage(imageUrl);
+        return ClientResponseDto.updateImage.builder().imageUrl(imageUrl).build();
     }
 
     // 회원 탈퇴
