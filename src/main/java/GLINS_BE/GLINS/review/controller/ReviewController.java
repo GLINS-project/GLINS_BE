@@ -49,6 +49,14 @@ public class ReviewController {
     }
 
     /**
+     장소 아이디를 사용하여 리뷰 모두 검색
+     */
+    @GetMapping("/place/{placeId}")
+    public Response<List<ReviewResponseDto>> getReviewByPlaceId(@PathVariable Long placeId){
+        return Response.success(reviewService.getReviewByPlaceId(placeId));
+    }
+
+    /**
      리뷰 삭제
      */
     @DeleteMapping("/{reviewId}")

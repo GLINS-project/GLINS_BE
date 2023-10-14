@@ -32,6 +32,7 @@ public class ClientResponseDto {
     @Data
     @Builder
     public static class info{
+        private Long id;
         private String nickname;
         private String imageUrl;
     }

@@ -10,6 +10,8 @@ import GLINS_BE.GLINS.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/client")
@@ -33,10 +35,11 @@ public class ClientController {
         return Response.success(clientService.getOtherInfo(clientId));
     }
 
-    @DeleteMapping
-    public Response<ClientResponseDto.withdraw> withdraw(){
-        return Response.success(clientService.withdraw());
+    @GetMapping("/nickname/{nickname}")
+    public Response<List<ClientResponseDto.info>> getClientByNickname(@PathVariable String nickname){
+        return Response.success(clientService.getClientsWithNickname(nickname));
     }
+
 
     @PatchMapping("/nickname")
     public Response<ClientResponseDto.updateNickname> updateNickname(@RequestBody ClientRequestDto requestDto){
@@ -46,6 +49,11 @@ public class ClientController {
     @PatchMapping("/image")
     public Response<ClientResponseDto.updateImage> updateImage(@ModelAttribute ClientRequestDto requestDto){ // ModelAttribute로 DTO와 폼 데이터와 바인딩
         return Response.success(clientService.updateImage(requestDto));
+    }
+
+    @DeleteMapping
+    public Response<ClientResponseDto.withdraw> withdraw(){
+        return Response.success(clientService.withdraw());
     }
 
     @GetMapping("/jwt-test")

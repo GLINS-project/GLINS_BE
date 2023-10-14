@@ -4,21 +4,21 @@ import java.math.BigDecimal;
 
 public class ReviewRequestDto {
     public String getContent() {
-        return Content;
+        return content;
     }
 
     public void setContent(String content) {
-        Content = content;
+        this.content = content;
     }
 
     public BigDecimal getRating() {
-        return Rating;
+        return rating;
     }
 
     public void setRating(BigDecimal rating) {
-        Rating = rating;
+        this.rating = rating;
     }
 
-    private String Content;
-    private BigDecimal Rating;
+    private String content;
+    private BigDecimal rating;
 }
