@@ -108,7 +108,7 @@ public class WishlistService {
         client_id_for_Reco_Str = client_id_for_Reco_Str.replace("[","").replace("]","").substring(0,1);
 
         String pythonExePath = "python3"; // 혹은 "python3", 시스템에 따라 다를 수 있습니다.
-        String scriptPath = "/Users/yeoingug/Desktop/GLINS_BE-main/src/main/resources/connect_py_db_v2.py";
+        String scriptPath = "/home/ubuntu/GLINS_BE/src/main/resources/connect_py_db_v2.py";
 
         ProcessBuilder processBuilder = new ProcessBuilder(pythonExePath,scriptPath,client_id_for_Reco_Str);
         Process process = processBuilder.start();

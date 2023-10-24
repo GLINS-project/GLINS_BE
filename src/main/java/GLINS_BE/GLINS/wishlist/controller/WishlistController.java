@@ -67,7 +67,7 @@ public class WishlistController {
      *
      * @return
      */
-    @GetMapping("/run-python")
+    @GetMapping("/recommend")
     public Response<JSONArray> runPythonScript() throws Exception {
         return Response.success(wishlistService.RecommentService());
     }
