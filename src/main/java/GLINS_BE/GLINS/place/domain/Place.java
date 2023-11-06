@@ -25,4 +25,5 @@ public class Place {
     private double longitude;
     private String category;
     private String hashtag;
+    private String imgUrl;
 }

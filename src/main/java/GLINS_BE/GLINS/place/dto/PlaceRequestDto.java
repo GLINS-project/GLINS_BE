@@ -10,13 +10,14 @@ public class PlaceRequestDto {
     private double latitude;
     private double longitude;
 
-    public Place toEntity(String category, String hashtag) {
+    public Place toEntity(String category, String hashtag, String imgUrl) {
         return Place.builder()
                 .placeName(placeName)
                 .latitude(latitude)
                 .longitude(longitude)
                 .category(category)
                 .hashtag(hashtag)
+                .imgUrl(imgUrl)
                 .build();
     }
 }

@@ -42,7 +42,9 @@ public class PlaceService {
 
         // WebDriver 초기화
         WebDriver driver = new ChromeDriver(options);
-        String category, hashtag;
+        String category = null;
+        String hashtag = null;
+        String imgUrl = null;
 
         try {
             // 웹 페이지 열기
@@ -62,6 +64,10 @@ public class PlaceService {
             hashtag = hashElement.getText().replaceAll("\n", "").trim().trim();
             System.out.println("Hash: " + hashtag);
 
+            // 이미지 추출
+            WebElement imgElement = driver.findElement(By.className("RHeader")).findElement(By.className("title"));
+            imgUrl = imgElement.getAttribute("src");
+            System.out.println("ImgUrl: " + imgUrl);
         }
         catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -69,9 +75,9 @@ public class PlaceService {
         finally {
             // WebDriver 종료
             driver.quit();
+            Place place = requestDto.toEntity(category, hashtag, imgUrl);
+            placeRepository.save(place);
+            return "장소 등록 완료";
         }
-        Place place = requestDto.toEntity(category, hashtag);
-        placeRepository.save(place);
-        return "장소 등록 완료";
     }
 }
