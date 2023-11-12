@@ -3,6 +3,7 @@ package GLINS_BE.GLINS.place.service;
 import GLINS_BE.GLINS.place.domain.Place;
 import GLINS_BE.GLINS.place.dto.PlaceRequestDto;
 import GLINS_BE.GLINS.place.repository.PlaceRepository;
+import GLINS_BE.GLINS.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,20 +13,34 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PlaceService {
+    private final WishlistService wishlistService;
     private final PlaceRepository placeRepository;
 
     public String createPlace(PlaceRequestDto requestDto) {
 
+        Optional<Place> optionalPlace = placeRepository.findByPlaceNameAndLatitudeAndLongitude(requestDto.getPlaceName(),
+                requestDto.getLatitude(), requestDto.getLongitude());
+        if(optionalPlace.isPresent()) {
+            wishlistService.createWishlist(optionalPlace.get().getId());
+            return "장소가 이미 저장되어 있어 위시리스트 등록만 진행하였습니다.";
+        }
+        return savePlace(requestDto);
+    }
+
+    private String savePlace(PlaceRequestDto requestDto) {
         String url = "https://www.diningcode.com/search.dc?query="
                 + requestDto.getAddress() + " " + requestDto.getPlaceName() ; // 크롤링할 웹 페이지 URL
         System.out.println("url = " + url);
 
         // Chrome WebDriver 경로 설정
-//        System.setProperty("webdriver.chrome.driver", "C:\\Users\\skap0\\Desktop\\Project\\chromedriver_win32\\chromedriver.exe");
+//        System.setProperty("webdriver.chrome.driver", "C:\\Users\\skap0\\Desktop\\Project\\chromedriver-win32\\chromedriver.exe");
         System.setProperty("webdriver.chrome.driver", "/home/ubuntu/chromedriver-linux64/chromedriver");
 
 
@@ -77,7 +92,8 @@ public class PlaceService {
             driver.quit();
             Place place = requestDto.toEntity(category, hashtag, imgUrl);
             placeRepository.save(place);
-            return "장소 등록 완료";
+            wishlistService.createWishlist(place.getId());
+            return "장소 등록 후 위시리스트 저장 완료";
         }
     }
 }
