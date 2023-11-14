@@ -148,14 +148,19 @@ for rotate_key in info_dir.keys():
 ## DB상에 있는 wishlist중 상위 5개만 exploit_result 함수 실행 후, 모든 결과 값을 더한 add_five_dict 만들기##
 client_id = int(sys.argv[1])
 
-for record in islice(cmp_wishlist,5):
+for record in cmp_wishlist:
     if client_id == record[1]:
-        target_num_dict[record[0]] = record[1]
+        target_num_dict[record[0]] = record[2]
         add_five_dict = add_dict(add_five_dict,exploit_result(target_num_dict[record[0]]))
 
 
 ## 결과 리스트(add_five_dict)에서 최고 값과 같은 값들을 출력해 냄 ##
 max_values = set()
+
+#기존의 wishlist에 있는 장소들은 추천시스템에서 제외
+for rotate_key in target_num_dict.keys():
+    add_five_dict.pop(target_num_dict[rotate_key],None)
+    info_dir.pop(target_num_dict[rotate_key],None)
 
 for i in range(0,5):
     if max(add_five_dict.values()) == 0:

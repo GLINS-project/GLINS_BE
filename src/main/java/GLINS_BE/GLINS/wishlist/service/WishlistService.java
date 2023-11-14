@@ -39,6 +39,12 @@ public class WishlistService {
         Place place = placeRepository.findById(placeId).orElseThrow(() ->
                 new AllGlinsException(ErrorCode.PLACE_NOT_FOUND, ErrorCode.PLACE_NOT_FOUND.getMessage()));
         Wishlist createWishlist = Wishlist.builder().client(client).place(place).build();
+
+        // 중복된 wishlist_id 체크
+        if (wishlistRepository.existsByClientAndPlace(client, place)) {
+            return "이미 해당 위시리스트가 존재합니다.";
+        }
+
         wishlistRepository.save(createWishlist);
         return "위시리스트 등록 완료";
     }

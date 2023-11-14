@@ -15,7 +15,6 @@ public class WishlistResponseDto {
     private double longitude;
     private String category;
     private String hashtag;
-    private String wishlist_kind;
     private Long client_id;
     private String imgUrl;
 
@@ -27,7 +26,6 @@ public class WishlistResponseDto {
         longitude = wishlist.getPlace().getLongitude();
         category = wishlist.getPlace().getCategory();
         hashtag = wishlist.getPlace().getHashtag();
-        wishlist_kind = wishlist.getWishlist_kind();
         client_id = wishlist.getClient().getId();
     }
 
