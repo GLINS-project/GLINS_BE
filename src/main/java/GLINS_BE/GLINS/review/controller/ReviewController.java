@@ -1,6 +1,7 @@
 package GLINS_BE.GLINS.review.controller;
 
 import GLINS_BE.GLINS.response.Response;
+import GLINS_BE.GLINS.review.dto.ReviewDetailResponseDto;
 import GLINS_BE.GLINS.review.dto.ReviewRequestDto;
 import GLINS_BE.GLINS.review.dto.ReviewResponseDto;
 import GLINS_BE.GLINS.review.service.ReviewService;
@@ -36,7 +37,7 @@ public class ReviewController {
      회원 아이디로 리뷰 검색
      */
     @GetMapping("/client/{clientId}")
-    public Response<List<ReviewResponseDto>> getReviewByClientId(@PathVariable Long clientId){
+    public Response<List<ReviewDetailResponseDto>> getReviewByClientId(@PathVariable Long clientId){
         return Response.success(reviewService.getReviewByClientId(clientId));
     }
 
@@ -44,7 +45,7 @@ public class ReviewController {
      자기 자신의 리뷰 모두 검색
      */
     @GetMapping
-    public Response<List<ReviewResponseDto>> getMyReview(){
+    public Response<List<ReviewDetailResponseDto>> getMyReview(){
         return Response.success(reviewService.getMyReview());
     }
 

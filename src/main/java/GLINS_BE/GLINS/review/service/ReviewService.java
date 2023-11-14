@@ -8,6 +8,7 @@ import GLINS_BE.GLINS.exception.ErrorCode;
 import GLINS_BE.GLINS.place.domain.Place;
 import GLINS_BE.GLINS.place.repository.PlaceRepository;
 import GLINS_BE.GLINS.review.domain.Review;
+import GLINS_BE.GLINS.review.dto.ReviewDetailResponseDto;
 import GLINS_BE.GLINS.review.dto.ReviewRequestDto;
 import GLINS_BE.GLINS.review.dto.ReviewResponseDto;
 import GLINS_BE.GLINS.review.repository.ReviewRepository;
@@ -51,21 +52,17 @@ public class ReviewService {
     /**
      * ClientId로 리뷰 조회
      */
-    public List<ReviewResponseDto> getReviewByClientId(Long clientId) {
-        return reviewRepository.findByClient_Id(clientId).stream()
-                .map(ReviewResponseDto::new)
-                .collect(Collectors.toList());
+    public List<ReviewDetailResponseDto> getReviewByClientId(Long clientId) {
+        return reviewRepository.findReviewsWithPlaceNameByClientId(clientId);
     }
 
     /**
      * 자신이 작성한 리뷰 모두 조회
      */
-    public List<ReviewResponseDto> getMyReview() {
+    public List<ReviewDetailResponseDto> getMyReview() {
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
-        return reviewRepository.findByClient_Id(client.getId()).stream()
-                .map(ReviewResponseDto::new)
-                .collect(Collectors.toList());
+        return reviewRepository.findReviewsWithPlaceNameByClientId(client.getId());
     }
 
     /**
