@@ -8,7 +8,6 @@ import GLINS_BE.GLINS.exception.ErrorCode;
 import GLINS_BE.GLINS.place.domain.Place;
 import GLINS_BE.GLINS.place.repository.PlaceRepository;
 import GLINS_BE.GLINS.wishlist.domain.Wishlist;
-import GLINS_BE.GLINS.wishlist.dto.WishlistRequestDto;
 import GLINS_BE.GLINS.wishlist.dto.WishlistResponseDto;
 import GLINS_BE.GLINS.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +33,12 @@ public class WishlistService {
     /**
      * 위시리스트 추가
      */
-    public String createWishlist(Long placeId, WishlistRequestDto wishlistRequestDto) {
+    public String createWishlist(Long placeId) {
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
         Place place = placeRepository.findById(placeId).orElseThrow(() ->
                 new AllGlinsException(ErrorCode.PLACE_NOT_FOUND, ErrorCode.PLACE_NOT_FOUND.getMessage()));
-        Wishlist createWishlist = Wishlist.builder().client(client).place(place).wishlist_kind(wishlistRequestDto.getWishlist_kind()).build();
+        Wishlist createWishlist = Wishlist.builder().client(client).place(place).build();
         wishlistRepository.save(createWishlist);
         return "위시리스트 등록 완료";
     }

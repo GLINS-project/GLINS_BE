@@ -1,7 +1,6 @@
 package GLINS_BE.GLINS.wishlist.controller;
 
 import GLINS_BE.GLINS.response.Response;
-import GLINS_BE.GLINS.wishlist.dto.WishlistRequestDto;
 import GLINS_BE.GLINS.wishlist.dto.WishlistResponseDto;
 import GLINS_BE.GLINS.wishlist.service.WishlistService;
 import com.nimbusds.jose.shaded.json.JSONArray;
@@ -23,8 +22,8 @@ public class WishlistController {
      * @return
      */
     @PostMapping("/{placeId}")
-    public Response<String> createWishlist(@PathVariable Long placeId, @RequestBody WishlistRequestDto wishlistRequestDto) {
-        return Response.success(wishlistService.createWishlist(placeId, wishlistRequestDto));
+    public Response<String> createWishlist(@PathVariable Long placeId) {
+        return Response.success(wishlistService.createWishlist(placeId));
     }
 
     /**

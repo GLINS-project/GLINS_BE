@@ -3,7 +3,6 @@ package GLINS_BE.GLINS.place.service;
 import GLINS_BE.GLINS.place.domain.Place;
 import GLINS_BE.GLINS.place.dto.PlaceRequestDto;
 import GLINS_BE.GLINS.place.repository.PlaceRepository;
-import GLINS_BE.GLINS.wishlist.dto.WishlistRequestDto;
 import GLINS_BE.GLINS.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -29,8 +28,7 @@ public class PlaceService {
         Optional<Place> optionalPlace = placeRepository.findByPlaceNameAndLatitudeAndLongitude(requestDto.getPlaceName(),
                 requestDto.getLatitude(), requestDto.getLongitude());
         if(optionalPlace.isPresent()) {
-            WishlistRequestDto Null = null; // 임의 값 대입 향후 수정
-            wishlistService.createWishlist(optionalPlace.get().getId(),Null);
+            wishlistService.createWishlist(optionalPlace.get().getId());
             return "장소가 이미 저장되어 있어 위시리스트 등록만 진행하였습니다.";
         }
         return savePlace(requestDto);
@@ -94,8 +92,7 @@ public class PlaceService {
             driver.quit();
             Place place = requestDto.toEntity(category, hashtag, imgUrl);
             placeRepository.save(place);
-            WishlistRequestDto Null = null; // 임의 값 대입 향후 수정
-            wishlistService.createWishlist(place.getId(),Null);
+            wishlistService.createWishlist(place.getId());
             return "장소 등록 후 위시리스트 저장 완료";
         }
     }
