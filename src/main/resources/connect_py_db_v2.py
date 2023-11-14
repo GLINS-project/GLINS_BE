@@ -60,6 +60,12 @@ def add_dict(dict1,dict2):
         dict_result[rotate_key] = dict1[rotate_key] + dict2[rotate_key]
     return dict_result
 
+## 두 dictionary를 이어주는 함수 ##
+def merge_dicts(dict1, dict2):
+    result = dict1.copy()
+    result.update(dict2)
+    return result
+
 
 ## 데이터 베이스에 있는 정보들 중 category 필드의 모든 정보를 가져요는 코드 ##
 #print("<데이터 베이스에 있는 정보들 중 category 필드의 모든 정보>")
@@ -133,26 +139,51 @@ for rotate_key in info_dir.keys():
     if find_word_in_string(info_dir[rotate_key],'가성비') == 1:
         info_dir_vector_hashtag[rotate_key][9] = 1
     ########## 해당 해시태그 값 출력 코드 ##########
-     # print('place_id = ',end = ' ')
-     # print(rotate_key,end = ' ')
-     # print('vector = ', end = ' ')
-     # print(info_dir_vector_hashtag[rotate_key])
+    # print('place_id = ',end = ' ')
+    # print(rotate_key,end = ' ')
+    # print('vector = ', end = ' ')
+    # print(info_dir_vector_hashtag[rotate_key])
 
 
 ## DB상에 있는 wishlist중 상위 5개만 exploit_result 함수 실행 후, 모든 결과 값을 더한 add_five_dict 만들기##
 client_id = int(sys.argv[1])
 
 for record in islice(cmp_wishlist,5):
-    if client_id == record[3]:
+    if client_id == record[1]:
         target_num_dict[record[0]] = record[1]
         add_five_dict = add_dict(add_five_dict,exploit_result(target_num_dict[record[0]]))
 
 
 ## 결과 리스트(add_five_dict)에서 최고 값과 같은 값들을 출력해 냄 ##
-for rotate_key in info_dir.keys():
-    if max(add_five_dict.values()) == add_five_dict[rotate_key]:
-        ## 결과 data를 JSON으로 바꾸기 위한 list -> dict 과정 ##
-        result_dict[rotate_key] = info_dir_name_to_placeid[rotate_key]
+max_values = set()
+
+for i in range(0,5):
+    if max(add_five_dict.values()) == 0:
+        break
+    # 최대 값이 5개가 될 때까지 반복
+    max_value = max(add_five_dict.values())
+    keys_to_remove = []  # 삭제할 키들을 저장하는 리스트
+
+    for rotate_key in info_dir.keys():
+        if add_five_dict[rotate_key] == max_value:
+            result_dict[rotate_key] = info_dir_name_to_placeid[rotate_key]
+            keys_to_remove.append(rotate_key)
+            max_values.add(max_value)
+
+    # 반복이 끝나면 딕셔너리에서 키를 제거
+    for key in keys_to_remove:
+        add_five_dict.pop(key,None)
+        info_dir.pop(key,None)
+
+# 딕셔너리의 값들을 리스트로 변환한 후 슬라이싱
+values_list = list(info_dir.values())[1:4]
+
+# 슬라이싱된 리스트를 다시 딕셔너리로 변환
+sliced_dict = dict(zip(list(info_dir.keys())[1:4], values_list))
+
+if len(result_dict) < 5:
+   result_dict = merge_dicts(result_dict,sliced_dict)
+
 
 ## 결과 dict에 있는 값들 shuffle ##
 result_list = list(result_dict.items())
