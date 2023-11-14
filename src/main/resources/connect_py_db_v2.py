@@ -170,8 +170,8 @@ for key,value in islice(result_dict.items(),5):
             print("\"place_id\":\"" + str(record[0]) + "\"", end=',')
             print("\"category\":\"" + str(record[1]) + "\"", end=',')
             print("\"hashtag\":\"" + str(record[2]) + "\"", end=',')
-            print("\"latitude\":\"" + str(record[3]) + "\"", end=',')
-            print("\"longitude\":\"" + str(record[4]) + "\"", end=',')
+            print("\"longitude\":\"" + str(record[3]) + "\"", end=',')
+            print("\"latitude\":\"" + str(record[4]) + "\"", end=',')
             print("\"place_name\":\"" + str(record[5]) + "\"", end='')
             print("}},", end='')
             counter += 1

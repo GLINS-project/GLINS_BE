@@ -8,18 +8,19 @@ import GLINS_BE.GLINS.exception.ErrorCode;
 import GLINS_BE.GLINS.place.domain.Place;
 import GLINS_BE.GLINS.place.repository.PlaceRepository;
 import GLINS_BE.GLINS.wishlist.domain.Wishlist;
+import GLINS_BE.GLINS.wishlist.dto.WishlistRequestDto;
 import GLINS_BE.GLINS.wishlist.dto.WishlistResponseDto;
-import GLINS_BE.GLINS.wishlist.repository.RecomendRepository;
 import GLINS_BE.GLINS.wishlist.repository.WishlistRepository;
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.jose.shaded.json.parser.JSONParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -29,17 +30,16 @@ public class WishlistService {
     private final WishlistRepository wishlistRepository;
     private final PlaceRepository placeRepository;
     private final ClientRepository clientRepository;
-    private final RecomendRepository recomendRepository;
 
     /**
      * 위시리스트 추가
      */
-    public String createWishlist(Long placeId) {
+    public String createWishlist(Long placeId, WishlistRequestDto wishlistRequestDto) {
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
         Place place = placeRepository.findById(placeId).orElseThrow(() ->
                 new AllGlinsException(ErrorCode.PLACE_NOT_FOUND, ErrorCode.PLACE_NOT_FOUND.getMessage()));
-        Wishlist createWishlist = Wishlist.builder().client(client).place(place).build();
+        Wishlist createWishlist = Wishlist.builder().client(client).place(place).wishlist_kind(wishlistRequestDto.getWishlist_kind()).build();
         wishlistRepository.save(createWishlist);
         return "위시리스트 등록 완료";
     }
@@ -95,7 +95,7 @@ public class WishlistService {
      추천 시스템 기반 알고리즘
      * @return
      */
-    public JSONArray RecommentService() throws Exception {
+    public List<WishlistResponseDto> RecommentService() throws Exception {
         String email = SecurityUtil.getEmail();
         Client client = validateClient(email);
         String client_id_for_Reco_Str = wishlistRepository.findByClient_Id(client.getId()).stream().map(WishlistResponseDto::new)
@@ -107,7 +107,7 @@ public class WishlistService {
         client_id_for_Reco_Str = client_id_for_Reco_Str.replace("[","").replace("]","").substring(0,1);
 
         String pythonExePath = "python3"; // 혹은 "python3", 시스템에 따라 다를 수 있습니다.
-        String scriptPath = "/home/ubuntu/GLINS_BE/src/main/resources/connect_py_db_v2.py";
+        String scriptPath = "../connect_py_db_v2.py";
 
         ProcessBuilder processBuilder = new ProcessBuilder(pythonExePath,scriptPath,client_id_for_Reco_Str);
         Process process = processBuilder.start();
@@ -118,7 +118,20 @@ public class WishlistService {
 
         while ((line = reader.readLine()) != null) {
             output.append(line).append("\n"); // 파이썬 스크립트의 출력을 output StringBuilder에 추가
-            System.out.print(line);
+        }
+
+        // 정규표현식으로 place_id 추출
+        String regex = "\"place_id\":\"(\\d+)\"";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(output);
+
+        List<Integer> place_ids = new ArrayList<>();
+
+        // 매칭된 모든 place_id 출력
+        while (matcher.find()) {
+            String placeId = matcher.group(1);
+            place_ids.add(Integer.valueOf(placeId));
+            System.out.println("Found place_id: " + placeId);
         }
 
         int exitCode = process.waitFor();
@@ -126,16 +139,10 @@ public class WishlistService {
             throw new RuntimeException("Python script execution failed with exit code: " + exitCode);
         }
 
-        //2. Parser
-        JSONParser jsonParser = new JSONParser();
-
-        //3. To Object
-        Object obj = jsonParser.parse(output.toString().trim());
-
-        //4. To JsonObject
-        JSONArray jsonObj = (JSONArray) obj;
-
-        return (JSONArray) obj;
+        return place_ids.stream()
+                .flatMap(placeId -> placeRepository.findById(Long.valueOf(placeId)).stream())
+                .map(WishlistResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     private Client validateClient(String email) {
